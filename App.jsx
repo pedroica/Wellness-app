@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FoodScoreboard } from './src/components/FoodScoreboard';
+import { FoodDiary } from './src/components/FoodDiary';
 import { Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -407,49 +409,39 @@ export default function WellnessApp() {
           </div>
         )}
 
-        {activeTab === 'alimentacao' && (
-          <div>
-            <div className="bg-slate-800 rounded-lg p-4 mb-4">
-              <p className="text-sm font-bold mb-3">Adicionar comida (LLM calcula)</p>
-              <input
-                type="text"
-                value={foodInput}
-                onChange={(e) => setFoodInput(e.target.value)}
-                placeholder="Ex: 300g costela + 2 ovos + arroz"
-                className="w-full bg-slate-900 text-white px-3 py-2 rounded text-sm mb-2"
-              />
-              <button
-                onClick={() => analyzeFoodWithLLM(foodInput)}
-                disabled={!foodInput || loading}
-                className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-slate-600 text-black font-bold py-2 rounded text-sm"
-              >
-                {loading ? 'Analisando...' : 'Analisar com IA'}
-              </button>
-            </div>
+{activeTab === 'alimentacao' && (
+  <div>
+    {/* Input de comida */}
+    <div className="bg-slate-800 rounded-lg p-4 mb-4">
+      <p className="text-sm font-bold mb-3">Adicionar comida (LLM calcula)</p>
+      <input
+        type="text"
+        value={foodInput}
+        onChange={(e) => setFoodInput(e.target.value)}
+        placeholder="Ex: 300g costela + 2 ovos + arroz"
+        className="w-full bg-slate-900 text-white px-3 py-2 rounded text-sm mb-2"
+      />
+      <button
+        onClick={() => analyzeFoodWithLLM(foodInput)}
+        disabled={!foodInput || loading}
+        className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-slate-600 text-black font-bold py-2 rounded text-sm"
+      >
+        {loading ? 'Analisando...' : 'Analisar com IA'}
+      </button>
+    </div>
 
-            <div className="bg-slate-800 rounded-lg p-4">
-              <p className="text-sm font-bold mb-3">Total do dia</p>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-slate-900 rounded p-2">
-                  <p className="text-xs text-slate-400">Calorias</p>
-                  <p className="text-lg font-black text-red-400">{dailyTotals.kcal}</p>
-                </div>
-                <div className="bg-slate-900 rounded p-2">
-                  <p className="text-xs text-slate-400">Proteina</p>
-                  <p className="text-lg font-black text-emerald-400">{dailyTotals.protein}g</p>
-                </div>
-                <div className="bg-slate-900 rounded p-2">
-                  <p className="text-xs text-slate-400">Gordura</p>
-                  <p className="text-lg font-black text-amber-400">{dailyTotals.fat}g</p>
-                </div>
-                <div className="bg-slate-900 rounded p-2">
-                  <p className="text-xs text-slate-400">Carbos</p>
-                  <p className="text-lg font-black text-blue-400">{dailyTotals.carbs}g</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+    {/* Placar do dia */}
+    <FoodScoreboard
+      dailyTotals={dailyTotals}
+      metas={{ kcal: 2400, protein: 215, fat: 160, carbs: 20 }}
+    />
+
+    {/* Diario de alimentacao */}
+    <div className="mt-6">
+      <FoodDiary foods={foods} />
+    </div>
+  </div>
+)}
 
         {activeTab === 'hidratacao' && (
           <div>
